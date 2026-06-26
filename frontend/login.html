@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ForexPro SA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HAMBURGER MENU STYLES ===== */
+        .navbar {
+            background: #0a0a1a;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .sa-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .btn-vip {
+            background: #f0b90b;
+            color: #0a0a1a !important;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+        }
+
+        .btn-vip:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: #0d0d20;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: right 0.3s ease;
+                padding: 40px 20px;
+                border-left: 1px solid rgba(255,255,255,0.05);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 20px;
+                color: white;
+            }
+
+            .nav-links a:hover {
+                color: #f0b90b;
+            }
+        }
+
+        /* ===== LOGIN STYLES ===== */
+        .login-container {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 40px;
+            background: #1a1a2e;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #f0b90b;
+        }
+        
+        .login-container .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #0a0a1a;
+            color: white;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #f0b90b;
+        }
+        
+        .form-group input::placeholder {
+            color: #555;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: #f0b90b;
+            color: #0a0a1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-login:hover {
+            background: #ffd700;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(240, 185, 11, 0.3);
+        }
+        
+        .btn-login:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+        }
+        
+        .login-footer a {
+            color: #f0b90b;
+            text-decoration: none;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #ff1744;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background: #00c853;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .risk-note {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .forgot-password a {
+            color: #666;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .forgot-password a:hover {
+            color: #f0b90b;
+        }
+
+        .risk-banner {
+            background: #8B0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .risk-banner .small-text {
+            font-size: 12px;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .sa-flag-text {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .login-container .zar-note {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background: #0a0a1a;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🇿🇦 FSCA COMPLIANT RISK BANNER -->
+    <div class="risk-banner">
+        ⚠️ <strong>FSCA WARNING:</strong> Forex trading carries substantial risk. 
+        The Financial Sector Conduct Authority (FSCA) warns that trading foreign exchange 
+        on margin carries a high level of risk and may not be suitable for all investors.
+        <span class="small-text">
+            ForexPro SA is not a licensed financial services provider. 
+            Past performance does not guarantee future results. 
+            Only trade with capital you can afford to lose completely.
+        </span>
+    </div>
+
+    <!-- NAVBAR WITH HAMBURGER -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Forex<span>Pro</span> <span class="sa-badge">🇿🇦 SA</span></a>
+            
+            <!-- Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="vip.html" class="btn-vip">Join VIP</a></li>
+                <li><a href="login.html" style="color: #f0b90b; font-weight: 700;">Login</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Overlay (closes menu when clicking outside) -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- LOGIN FORM -->
+    <div class="login-container">
+        <h1>🔐 Welcome Back <span class="sa-flag-text">🇿🇦</span></h1>
+        <p class="subtitle">Login to access your VIP dashboard</p>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="email">📧 Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="Enter your email" 
+                    required
+                    autocomplete="email"
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔑 Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Enter your password" 
+                    required
+                    minlength="8"
+                    autocomplete="current-password"
+                >
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                🚀 Login to Dashboard
+            </button>
+        </form>
+        
+        <div class="login-footer">
+            Don't have an account? <a href="vip.html">Join VIP Now</a>
+        </div>
+        
+        <div class="zar-note">
+            🇿🇦 All prices in South African Rand (ZAR)
+        </div>
+        
+        <div class="risk-note">
+            ⚠️ Trading involves substantial risk of loss. Only trade with funds you can afford to lose.
+        </div>
+    </div>
+
+    <!-- ===== HAMBURGER MENU SCRIPT ===== -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        // Toggle menu
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+            });
+        }
+
+        // Close menu when overlay is clicked
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Close menu when ESC key is pressed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+
+    <!-- ===== LOGIN SCRIPT ===== -->
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        // Check if already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Verify token is still valid
+            fetch(`${API_URL}/auth/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = 'dashboard.html';
+                }
+            })
+            .catch(() => {
+                localStorage.removeItem('token');
+            });
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            // Reset messages
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+            
+            // Disable button
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Logging in...';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Save token
+                    localStorage.setItem('token', data.token);
+                    
+                    // Show success
+                    successDiv.textContent = '✅ Login successful! Redirecting...';
+                    successDiv.classList.add('show');
+                    
+                    // Redirect to dashboard after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    // Show error
+                    errorDiv.textContent = '❌ ' + (data.error || 'Login failed. Please try again.');
+                    errorDiv.classList.add('show');
+                    
+                    // Re-enable button
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = '🚀 Login to Dashboard';
+                }
+            } catch (error) {
+                errorDiv.textContent = '❌ Connection error. Make sure the server is running.';
+                errorDiv.classList.add('show');
+                
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🚀 Login to Dashboard';
+                console.error('Login error:', error);
+            }
+        }
+
+        // Enter key to submit form
+        document.getElementById('loginForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin(e);
+            }
+        });
+    </script>
+</body>
+</html>

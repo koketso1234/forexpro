@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexPro SA - Premium Trading Signals</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HAMBURGER MENU STYLES ===== */
+        .navbar {
+            background: #0a0a1a;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .sa-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .btn-vip {
+            background: #f0b90b;
+            color: #0a0a1a !important;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+        }
+
+        .btn-vip:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .btn-login-nav {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-login-nav:hover {
+            color: white;
+            border-color: #f0b90b;
+        }
+
+        .btn-logout-nav {
+            background: transparent;
+            border: 1px solid #ff1744;
+            color: #ff1744;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .btn-logout-nav:hover {
+            background: #ff1744;
+            color: white;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name-display {
+            color: #f0b90b;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: #0d0d20;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: right 0.3s ease;
+                padding: 40px 20px;
+                border-left: 1px solid rgba(255,255,255,0.05);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 20px;
+                color: white;
+            }
+
+            .nav-links a:hover {
+                color: #f0b90b;
+            }
+
+            .btn-login-nav {
+                font-size: 20px;
+                padding: 10px 0;
+                border: none;
+            }
+
+            .btn-logout-nav {
+                font-size: 18px;
+                padding: 12px 40px;
+                width: auto;
+            }
+
+            .user-name-display {
+                font-size: 16px;
+            }
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 20px;
+        }
+
+        .hero .highlight {
+            color: #f0b90b;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(240, 185, 11, 0.3);
+        }
+
+        .btn-secondary {
+            border: 2px solid #f0b90b;
+            color: #f0b90b;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #f0b90b;
+            color: #0a0a1a;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+        }
+
+        .stats div {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 36px;
+            font-weight: 800;
+            color: #f0b90b;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            padding: 80px 0;
+            background: #0d0d20;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #888;
+        }
+
+        /* ===== RISK BANNER ===== */
+        .risk-banner {
+            background: #8B0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .risk-banner .small-text {
+            font-size: 12px;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer p {
+            color: #666;
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: #444;
+            margin-top: 5px;
+        }
+
+        /* ===== SA ZAR BADGE IN STATS ===== */
+        .zar-badge {
+            display: inline-block;
+            background: rgba(240, 185, 11, 0.2);
+            color: #f0b90b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🇿🇦 FSCA COMPLIANT RISK BANNER -->
+    <div class="risk-banner">
+        ⚠️ <strong>FSCA WARNING:</strong> Forex trading carries substantial risk. 
+        The Financial Sector Conduct Authority (FSCA) warns that trading foreign exchange 
+        on margin carries a high level of risk and may not be suitable for all investors.
+        <span class="small-text">
+            ForexPro SA is not a licensed financial services provider. 
+            Past performance does not guarantee future results. 
+            Only trade with capital you can afford to lose completely.
+        </span>
+    </div>
+
+    <!-- NAVBAR WITH HAMBURGER -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Forex<span>Pro</span> <span class="sa-badge">🇿🇦 SA</span></a>
+            
+            <!-- Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="vip.html" class="btn-vip">Join VIP</a></li>
+                <li><a href="login.html" class="btn-login-nav">Login</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="#features">Features</a></li>
+                <!-- Dynamic user status will be inserted here by JavaScript -->
+                <li id="userStatusContainer"></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Overlay (closes menu when clicking outside) -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <h1>Professional <span class="highlight">Forex Signals</span></h1>
+            <p>Get daily premium trading signals with high accuracy. Join thousands of successful traders.</p>
+            <div class="hero-buttons">
+                <a href="vip.html" class="btn-primary">Start Trading</a>
+                <a href="#features" class="btn-secondary">Learn More</a>
+            </div>
+            <div class="stats">
+                <div>
+                    <span class="stat-number">2,847+</span>
+                    <span class="stat-label">Active Members</span>
+                </div>
+                <div>
+                    <span class="stat-number">78%</span>
+                    <span class="stat-label">Win Rate</span>
+                </div>
+                <div>
+                    <span class="stat-number">4.8⭐</span>
+                    <span class="stat-label">User Rating</span>
+                </div>
+            </div>
+            <div class="zar-badge">🇿🇦 Trading in South African Rand (ZAR)</div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Why Choose ForexPro SA?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Premium Signals</h3>
+                    <p>5-10 high-quality signals daily with entry, SL, and TP levels</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>Real-Time Alerts</h3>
+                    <p>Instant notifications via email and Telegram</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📈</div>
+                    <h3>ZAR Pairs Included</h3>
+                    <p>USD/ZAR, EUR/ZAR, GBP/ZAR and all major pairs</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🇿🇦</div>
+                    <h3>South African Focus</h3>
+                    <p>Priced in ZAR with local payment options</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎓</div>
+                    <h3>Education</h3>
+                    <p>Learn from professional traders</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h3>Affordable Pricing</h3>
+                    <p>From R1,850/month - Save up to 50% yearly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>© 2026 ForexPro SA. All rights reserved.</p>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                ⚠️ <strong>Important Notice:</strong> ForexPro SA is a trading signal provider and 
+                is not regulated by the FSCA. All signals are for educational purposes only. 
+                Trading involves substantial risk of loss.
+            </p>
+            <p class="footer-disclaimer">
+                🇿🇦 South African users: The Financial Sector Conduct Authority (FSCA) regulates 
+                financial services in South Africa. Please ensure you understand all risks 
+                before trading. <a href="#" style="color: #f0b90b;">Risk Disclosure</a>
+            </p>
+            <p class="footer-disclaimer" style="margin-top: 10px;">
+                All prices in South African Rand (ZAR). 7-day money-back guarantee.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // ===== CHECK LOGIN STATUS =====
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+        const userStatusContainer = document.getElementById('userStatusContainer');
+
+        async function checkLoginStatus() {
+            if (token) {
+                try {
+                    const response = await fetch(`${API_URL}/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const userName = data.user.name;
+                        
+                        // Show logged-in state with user name and logout button
+                        userStatusContainer.innerHTML = `
+                            <div class="user-status">
+                                <span class="user-name-display">👤 ${userName}</span>
+                                <button class="btn-logout-nav" onclick="logout()">Logout</button>
+                            </div>
+                        `;
+                    } else {
+                        // Token invalid - show login
+                        showLoginState();
+                    }
+                } catch (error) {
+                    // Server not reachable - show login
+                    showLoginState();
+                }
+            } else {
+                // No token - show login
+                showLoginState();
+            }
+        }
+
+        function showLoginState() {
+            userStatusContainer.innerHTML = `
+                <li><a href="login.html" class="btn-login-nav">Login</a></li>
+            `;
+        }
+
+        // ===== LOGOUT FUNCTION =====
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+
+        // ===== HAMBURGER MENU FUNCTIONALITY =====
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+            });
+        }
+
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-links a, .nav-links button').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Close menu when ESC key is pressed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // ===== INITIALIZE =====
+        // Check login status when page loads
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+    </script>
+</body>
+</html>

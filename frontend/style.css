@@ -1,0 +1,848 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #0a0a1a;
+    color: white;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===== RISK BANNER - FSCA COMPLIANT ===== */
+.risk-banner {
+    background: #8B0000;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.risk-banner .small-text {
+    font-size: 12px;
+    font-weight: 400;
+    display: block;
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: #0a0a1a;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Logo */
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #f0b90b;
+    text-decoration: none;
+}
+
+.logo span {
+    color: white;
+}
+
+/* South African Badge */
+.sa-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+/* Navigation links */
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 16px;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+.nav-links .btn-vip {
+    background: #f0b90b;
+    color: #0a0a1a !important;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+}
+
+.nav-links .btn-vip:hover {
+    background: #ffd700;
+    transform: scale(1.05);
+}
+
+.nav-links .btn-logout {
+    background: transparent;
+    border: 1px solid #ff1744;
+    color: #ff1744;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.nav-links .btn-logout:hover {
+    background: #ff1744;
+    color: white;
+}
+
+/* Hamburger icon - HIDDEN ON DESKTOP */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 5px;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    margin: 4px 0;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Hamburger animation (X shape when active) */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Overlay when menu is open */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 999;
+}
+
+.nav-overlay.active {
+    display: block;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 52px;
+    margin-bottom: 20px;
+}
+
+.hero .highlight {
+    color: #f0b90b;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #aaa;
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: #f0b90b;
+    color: #0a0a1a;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(240, 185, 11, 0.3);
+}
+
+.btn-secondary {
+    border: 2px solid #f0b90b;
+    color: #f0b90b;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #f0b90b;
+    color: #0a0a1a;
+}
+
+/* ZAR Badge in Hero */
+.zar-badge {
+    display: inline-block;
+    background: rgba(240, 185, 11, 0.15);
+    color: #f0b90b;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 30px;
+    border: 1px solid rgba(240, 185, 11, 0.2);
+}
+
+/* ===== STATS ===== */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+}
+
+.stats div {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 36px;
+    font-weight: 800;
+    color: #f0b90b;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+/* ===== FEATURES ===== */
+.features {
+    padding: 80px 0;
+    background: #0d0d20;
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 50px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    background: #1a1a2e;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.feature-card .icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: #888;
+}
+
+/* ===== PRICING GRID ===== */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 60px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: #1a1a2e;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    border-color: #f0b90b;
+}
+
+.pricing-card.popular {
+    border-color: #f0b90b;
+    position: relative;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    right: 30px;
+    background: #f0b90b;
+    color: #0a0a1a;
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.price {
+    font-size: 48px;
+    font-weight: 800;
+    color: #f0b90b;
+    margin: 20px 0;
+}
+
+.price span {
+    font-size: 18px;
+    color: #888;
+}
+
+.price-zar {
+    font-size: 14px;
+    color: #666;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+.features-list {
+    list-style: none;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.features-list li::before {
+    content: "✅";
+}
+
+.btn-join-plan {
+    background: #f0b90b;
+    color: #0a0a1a;
+    padding: 16px 50px;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.btn-join-plan:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(240, 185, 11, 0.3);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+footer p {
+    color: #666;
+}
+
+.footer-disclaimer {
+    font-size: 12px;
+    color: #444;
+    margin-top: 5px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 32px;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-card {
+        padding: 30px 20px;
+    }
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media screen and (max-width: 768px) {
+    /* Show hamburger on mobile */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Hide nav links by default on mobile */
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        max-width: 320px;
+        height: 100vh;
+        background: #0d0d20;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+        transition: right 0.3s ease;
+        padding: 40px 20px;
+        border-left: 1px solid rgba(255,255,255,0.05);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        list-style: none;
+    }
+
+    /* Show nav links when active */
+    .nav-links.active {
+        right: 0;
+    }
+
+    /* Style links for mobile */
+    .nav-links a {
+        font-size: 20px;
+        color: white;
+        padding: 10px 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links a:hover {
+        color: #f0b90b;
+    }
+
+    .nav-links .btn-vip {
+        background: #f0b90b;
+        color: #0a0a1a !important;
+        padding: 12px 40px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 18px;
+        width: auto;
+    }
+
+    .nav-links .btn-logout {
+        padding: 12px 40px;
+        font-size: 18px;
+        width: auto;
+    }
+}
+
+/* Small phones */
+@media screen and (max-width: 480px) {
+    .nav-links {
+        width: 85%;
+    }
+    
+    .logo {
+        font-size: 22px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 36px;
+    }
+}
+
+/* ===== SOUTH AFRICAN SPECIFIC STYLES ===== */
+
+/* ZAR Currency Display */
+.zar-amount {
+    color: #f0b90b;
+    font-weight: 700;
+}
+
+.zar-symbol {
+    font-weight: 700;
+}
+
+/* FSCA Disclaimer Box */
+.fsca-disclaimer {
+    background: #1a1a2e;
+    border-left: 4px solid #ff1744;
+    padding: 15px 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+.fsca-disclaimer h4 {
+    color: #ff1744;
+    margin-bottom: 5px;
+}
+
+.fsca-disclaimer p {
+    color: #888;
+    font-size: 13px;
+}
+
+/* South African Flag Colors */
+.sa-green { color: #007A4D; }
+.sa-yellow { color: #FFB612; }
+.sa-red { color: #DE3831; }
+.sa-blue { color: #000080; }
+
+/* Status Badges */
+.status-active {
+    background: #00c853;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-inactive {
+    background: #ff1744;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #f0b90b;
+    color: #0a0a1a;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* VIP Badge */
+.vip-badge {
+    background: #f0b90b;
+    color: #0a0a1a;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-block;
+}
+
+/* Trading Hours Notice */
+.trading-hours {
+    background: #1a1a2e;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.trading-hours strong {
+    color: #f0b90b;
+}
+
+/* ===== DASHBOARD SPECIFIC ===== */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 30px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Rates Grid */
+.rates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.rate-card {
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.rate-card:hover {
+    transform: translateY(-5px);
+    border: 1px solid rgba(240, 185, 11, 0.3);
+}
+
+.rate-card .pair {
+    font-size: 16px;
+    font-weight: 700;
+    color: #888;
+}
+
+.rate-card .price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #f0b90b;
+    margin: 10px 0;
+}
+
+.rate-card .change.positive {
+    color: #00c853;
+}
+
+.rate-card .change.negative {
+    color: #ff1744;
+}
+
+.rate-card .zar-label {
+    font-size: 10px;
+    color: #666;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Signals Grid */
+.signals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.signal-card {
+    background: #1a1a2e;
+    padding: 25px;
+    border-radius: 15px;
+    border-left: 4px solid #f0b90b;
+    transition: transform 0.3s;
+}
+
+.signal-card:hover {
+    transform: translateY(-5px);
+}
+
+.signal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.signal-pair {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.signal-action {
+    padding: 4px 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.signal-action.buy {
+    background: #00c853;
+    color: white;
+}
+
+.signal-action.sell {
+    background: #ff1744;
+    color: white;
+}
+
+.signal-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.signal-detail {
+    background: #0a0a1a;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.signal-detail label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+}
+
+.signal-detail value {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.confidence-high {
+    color: #00c853;
+}
+
+.confidence-medium {
+    color: #f0b90b;
+}
+
+.confidence-low {
+    color: #ff1744;
+}
+
+/* Loading & Errors */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.error-msg {
+    color: #ff1744;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Membership Card */
+.membership-card {
+    background: #1a1a2e;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(240, 185, 11, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.membership-card .label {
+    color: #888;
+    font-size: 12px;
+}
+
+.membership-card .value {
+    color: #f0b90b;
+    font-weight: 700;
+}
+
+.membership-card .status-active {
+    color: #00c853;
+    font-weight: 700;
+}
+
+.membership-card .status-inactive {
+    color: #ff1744;
+    font-weight: 700;
+}

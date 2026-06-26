@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join VIP - ForexPro SA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HAMBURGER MENU STYLES ===== */
+        .navbar {
+            background: #0a0a1a;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .btn-vip {
+            background: #f0b90b;
+            color: #0a0a1a !important;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+        }
+
+        .btn-vip:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .btn-login-nav {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-login-nav:hover {
+            color: white;
+            border-color: #f0b90b;
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: #0d0d20;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: right 0.3s ease;
+                padding: 40px 20px;
+                border-left: 1px solid rgba(255,255,255,0.05);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 20px;
+                color: white;
+            }
+
+            .nav-links a:hover {
+                color: #f0b90b;
+            }
+
+            .btn-login-nav {
+                font-size: 20px;
+                padding: 10px 0;
+                border: none;
+            }
+        }
+
+        /* ===== VIP PAGE STYLES ===== */
+        .vip-hero {
+            background: linear-gradient(135deg, #1a1a3e, #0a0a1a);
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .vip-hero h1 { font-size: 48px; }
+        .vip-hero .highlight { color: #f0b90b; }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 60px 0;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: #f0b90b;
+        }
+        .pricing-card.popular {
+            border-color: #f0b90b;
+            position: relative;
+        }
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            right: 30px;
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .plan-name { font-size: 24px; font-weight: 700; }
+        .price { font-size: 48px; font-weight: 800; color: #f0b90b; margin: 20px 0; }
+        .price span { font-size: 18px; color: #888; }
+        .features-list { list-style: none; margin: 30px 0; text-align: left; }
+        .features-list li { 
+            padding: 10px 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .features-list li::before { content: "✅"; }
+        
+        .btn-join-plan {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 16px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .btn-join-plan:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(240, 185, 11, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            border: 1px solid #f0b90b;
+        }
+        .modal-content h2 { color: #f0b90b; margin-bottom: 20px; }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #0a0a1a;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .modal-content input:focus {
+            outline: none;
+            border-color: #f0b90b;
+        }
+        .modal-content .btn-submit {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .modal-content .btn-submit:hover {
+            background: #ffd700;
+        }
+        .close-modal {
+            float: right;
+            font-size: 30px;
+            cursor: pointer;
+            color: #888;
+        }
+        .close-modal:hover { color: white; }
+        .selected-plan-info {
+            background: #0a0a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .selected-plan-info p { color: #f0b90b; font-weight: 700; }
+        .risk-note { font-size: 12px; color: #666; margin-top: 15px; text-align: center; }
+        .risk-warning-modal { 
+            font-size: 12px; 
+            color: #ff4444; 
+            text-align: center; 
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .risk-banner {
+            background: #8B0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .risk-banner .small-text {
+            font-size: 12px;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* Already have an account link */
+        .already-have-account {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+        }
+
+        .already-have-account a {
+            color: #f0b90b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .already-have-account a:hover {
+            text-decoration: underline;
+        }
+
+        /* South African Flag Badge */
+        .sa-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .zar-approx {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🇿🇦 FSCA COMPLIANT RISK BANNER -->
+    <div class="risk-banner">
+        ⚠️ <strong>FSCA WARNING:</strong> Forex trading carries substantial risk. 
+        The Financial Sector Conduct Authority (FSCA) warns that trading foreign exchange 
+        on margin carries a high level of risk and may not be suitable for all investors.
+        <span class="small-text">
+            ForexPro SA is not a licensed financial services provider. 
+            Past performance does not guarantee future results. 
+            Only trade with capital you can afford to lose completely.
+        </span>
+    </div>
+
+    <!-- NAVBAR WITH HAMBURGER -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Forex<span>Pro</span> <span class="sa-badge">🇿🇦 SA</span></a>
+            
+            <!-- Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="vip.html" class="btn-vip">Join VIP</a></li>
+                <li><a href="login.html" class="btn-login-nav">Login</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="index.html#features">Features</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Overlay (closes menu when clicking outside) -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- VIP HERO SECTION -->
+    <section class="vip-hero">
+        <div class="container">
+            <h1>🚀 <span class="highlight">VIP</span> Trading Signals</h1>
+            <p style="font-size: 20px; color: #aaa; max-width: 600px; margin: 20px auto;">
+                Get professional-grade Forex signals with verified accuracy. 
+                <span style="display: block; font-size: 16px; color: #f0b90b; margin-top: 10px;">
+                    🇿🇦 Proudly serving South African traders
+                </span>
+            </p>
+        </div>
+    </section>
+
+    <!-- 🇿🇦 PRICING PLANS IN ZAR -->
+    <div class="pricing-grid">
+        <!-- Monthly -->
+        <div class="pricing-card">
+            <div class="plan-name">Monthly</div>
+            <div class="price">R1,850 <span>/mo</span></div>
+            <div style="font-size: 14px; color: #666; margin-top: -15px; margin-bottom: 15px;">
+                ≈ $97 USD
+            </div>
+            <ul class="features-list">
+                <li>📊 5-10 signals daily</li>
+                <li>🎯 Entry, SL & TP levels</li>
+                <li>📧 Email alerts</li>
+                <li>💬 Basic support</li>
+                <li>🇿🇦 ZAR pairs included</li>
+            </ul>
+            <button class="btn-join-plan" onclick="openModal('monthly', 1850)">Join VIP</button>
+        </div>
+
+        <!-- Quarterly (Popular) -->
+        <div class="pricing-card popular">
+            <div class="popular-badge">🔥 BEST VALUE</div>
+            <div class="plan-name">Quarterly</div>
+            <div class="price">R3,700 <span>/3mo</span></div>
+            <div style="font-size: 14px; color: #666; margin-top: -15px; margin-bottom: 15px;">
+                ≈ $197 USD
+            </div>
+            <ul class="features-list">
+                <li>✅ Everything in Monthly</li>
+                <li>⚡ Priority signals</li>
+                <li>🎥 Live trading sessions</li>
+                <li>👨‍🏫 1-on-1 coaching</li>
+                <li>💰 Save 33%</li>
+                <li>🇿🇦 SA market focus</li>
+            </ul>
+            <button class="btn-join-plan" onclick="openModal('quarterly', 3700)">Join VIP</button>
+        </div>
+
+        <!-- Yearly -->
+        <div class="pricing-card">
+            <div class="plan-name">Yearly</div>
+            <div class="price">R11,100 <span>/yr</span></div>
+            <div style="font-size: 14px; color: #666; margin-top: -15px; margin-bottom: 15px;">
+                ≈ $597 USD
+            </div>
+            <ul class="features-list">
+                <li>✅ Everything in Quarterly</li>
+                <li>🔮 Exclusive indicators</li>
+                <li>💎 VIP Discord access</li>
+                <li>📈 Monthly strategy calls</li>
+                <li>💰 Save 50%</li>
+                <li>🇿🇦 SA trading hours</li>
+            </ul>
+            <button class="btn-join-plan" onclick="openModal('yearly', 11100)">Join VIP</button>
+        </div>
+    </div>
+
+    <!-- Already have an account? -->
+    <div style="text-align: center; padding-bottom: 40px;">
+        <p style="color: #888;">Already have an account? <a href="login.html" style="color: #f0b90b; text-decoration: none; font-weight: 600;">Login here</a></p>
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">
+            🇿🇦 All prices in South African Rand (ZAR)
+        </p>
+    </div>
+
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>🚀 Join VIP Now</h2>
+            <p style="color: #888; margin-bottom: 20px;">Get instant access to premium signals</p>
+            
+            <form id="vipForm" onsubmit="handleRegister(event)">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="tel" id="phone" placeholder="Phone Number (South Africa)" required>
+                <input type="password" id="password" placeholder="Create Password (min 8 chars)" required minlength="8">
+                
+                <div class="selected-plan-info">
+                    <p>📌 Plan: <span id="selectedPlan">Monthly</span></p>
+                    <p>💰 Price: R<span id="selectedPrice">1,850</span></p>
+                </div>
+                
+                <div style="margin: 10px 0; font-size: 14px; color: #888;">
+                    <input type="checkbox" id="agree" required> 
+                    I agree to the <a href="#" style="color: #f0b90b;">Terms</a> & acknowledge the 
+                    <a href="#" style="color: #f0b90b;">Risk Disclosure</a>
+                </div>
+                
+                <div style="margin: 10px 0; font-size: 14px; color: #888;">
+                    <input type="checkbox" id="fscaAgree" required> 
+                    I understand the <a href="#" style="color: #f0b90b;">FSCA Risk Warning</a> 
+                    and acknowledge that Forex trading carries substantial risk.
+                </div>
+                
+                <button type="submit" class="btn-submit">💰 Join VIP Now</button>
+                
+                <div class="risk-note">
+                    🔒 Secure payments via PayFast (South Africa)
+                </div>
+                <div class="risk-warning-modal">
+                    ⚠️ Forex trading involves substantial risk of loss. 
+                    Only trade with funds you can afford to lose.
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center; color: #888; font-size: 14px;">
+                    Already have an account? <a href="login.html" style="color: #f0b90b; text-decoration: none; font-weight: 600;">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== HAMBURGER MENU SCRIPT ===== -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        // Toggle menu
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+            });
+        }
+
+        // Close menu when overlay is clicked
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Close menu when ESC key is pressed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+
+    <!-- ===== VIP REGISTRATION SCRIPT ===== -->
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        function openModal(plan, price) {
+            const planName = plan.charAt(0).toUpperCase() + plan.slice(1);
+            document.getElementById('selectedPlan').textContent = planName;
+            document.getElementById('selectedPrice').textContent = price.toLocaleString();
+            document.getElementById('signupModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('signupModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('signupModal')) {
+                closeModal();
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const plan = document.getElementById('selectedPlan').textContent.toLowerCase();
+
+            // Disable submit button to prevent double submission
+            const submitBtn = document.querySelector('.btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, password, plan })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    alert('🎉 Welcome to ForexPro SA VIP!\n\nYou will be redirected to your dashboard.\n\n⚠️ Remember: Trading involves substantial risk. Only trade with funds you can afford to lose.');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('❌ Error: ' + data.error);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '💰 Join VIP Now';
+                }
+            } catch (error) {
+                alert('❌ Connection error. Make sure the server is running.');
+                console.error(error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💰 Join VIP Now';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - ForexPro SA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HAMBURGER MENU STYLES ===== */
+        .navbar {
+            background: #0a0a1a;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .sa-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid #ff1744;
+            color: #ff1744;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .btn-logout:hover {
+            background: #ff1744;
+            color: white;
+        }
+
+        .btn-admin {
+            background: #f0b90b;
+            color: #0a0a1a !important;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+        }
+
+        .btn-admin:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: #0d0d20;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: right 0.3s ease;
+                padding: 40px 20px;
+                border-left: 1px solid rgba(255,255,255,0.05);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 20px;
+                color: white;
+            }
+
+            .nav-links a:hover {
+                color: #f0b90b;
+            }
+
+            .btn-logout {
+                font-size: 18px;
+                padding: 12px 40px;
+            }
+        }
+
+        /* ===== ADMIN STYLES ===== */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-title h1 {
+            margin: 0;
+        }
+
+        .admin-title .sa-flag {
+            font-size: 24px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #1a1a2e;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(240, 185, 11, 0.3);
+        }
+
+        .stat-box .number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #f0b90b;
+        }
+
+        .stat-box .label {
+            color: #888;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .stat-box .icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab {
+            padding: 12px 25px;
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .admin-tab:hover {
+            border-color: #f0b90b;
+            color: white;
+        }
+
+        .admin-tab.active {
+            background: #f0b90b;
+            color: #0a0a1a;
+            border-color: #f0b90b;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .table-container {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            color: #f0b90b;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 14px;
+        }
+
+        td .status-active {
+            color: #00c853;
+            font-weight: 700;
+        }
+
+        td .status-inactive {
+            color: #ff1744;
+            font-weight: 700;
+        }
+
+        td .status-pending {
+            color: #f0b90b;
+            font-weight: 700;
+        }
+
+        .btn-action {
+            padding: 5px 15px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-edit {
+            background: #f0b90b;
+            color: #0a0a1a;
+        }
+
+        .btn-edit:hover {
+            background: #ffd700;
+        }
+
+        .btn-delete {
+            background: #ff1744;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d50000;
+        }
+
+        .btn-activate {
+            background: #00c853;
+            color: white;
+        }
+
+        .btn-activate:hover {
+            background: #00a844;
+        }
+
+        .btn-deactivate {
+            background: #ff9100;
+            color: white;
+        }
+
+        .btn-deactivate:hover {
+            background: #e67a00;
+        }
+
+        .btn-create {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-create:hover {
+            background: #ffd700;
+            transform: scale(1.02);
+        }
+
+        .create-form {
+            background: #1a1a2e;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(240, 185, 11, 0.2);
+        }
+
+        .create-form h3 {
+            color: #f0b90b;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #0a0a1a;
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f0b90b;
+        }
+
+        .form-group select option {
+            background: #0a0a1a;
+        }
+
+        .btn-submit-form {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-submit-form:hover {
+            background: #ffd700;
+            transform: scale(1.02);
+        }
+
+        .risk-banner {
+            background: #8B0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .risk-banner .small-text {
+            font-size: 12px;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading-spinner::after {
+            content: "⏳";
+            font-size: 30px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quick-stat {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .quick-stat .number {
+            font-size: 24px;
+            font-weight: 800;
+            color: #f0b90b;
+        }
+
+        .quick-stat .label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .admin-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+
+            .admin-tab {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 🇿🇦 FSCA COMPLIANT RISK BANNER -->
+    <div class="risk-banner">
+        ⚠️ <strong>ADMIN PANEL - FSCA WARNING:</strong> Forex trading carries substantial risk. 
+        The Financial Sector Conduct Authority (FSCA) warns that trading foreign exchange 
+        on margin carries a high level of risk and may not be suitable for all investors.
+        <span class="small-text">
+            ForexPro SA Admin - Authorized Personnel Only. 
+            All actions are logged and monitored.
+        </span>
+    </div>
+
+    <!-- NAVBAR WITH HAMBURGER -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Forex<span>Pro</span> <span class="sa-badge">🇿🇦 Admin</span></a>
+            
+            <!-- Hamburger Button -->
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Navigation Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="vip.html">Join VIP</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="admin.html" class="btn-admin">👑 Admin</a></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Overlay (closes menu when clicking outside) -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- ADMIN CONTENT -->
+    <div class="admin-container">
+        <div class="admin-header">
+            <div class="admin-title">
+                <span class="sa-flag">🇿🇦</span>
+                <h1>👑 Admin Panel</h1>
+                <span style="font-size: 14px; color: #666;">South Africa</span>
+            </div>
+            <div>
+                <span id="adminName" style="color: #aaa; margin-right: 15px;">Loading...</span>
+                <span class="vip-badge" style="background: #f0b90b; color: #0a0a1a; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 12px;">⭐ Admin</span>
+            </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <div class="admin-stats">
+            <div class="stat-box">
+                <div class="icon">👤</div>
+                <div class="number" id="totalUsers">0</div>
+                <div class="label">Total Users</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">✅</div>
+                <div class="number" id="activeUsers">0</div>
+                <div class="label">Active Subscriptions</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">📊</div>
+                <div class="number" id="totalSignals">0</div>
+                <div class="label">Total Signals</div>
+            </div>
+            <div class="stat-box">
+                <div class="icon">📈</div>
+                <div class="number" id="activeSignals">0</div>
+                <div class="label">Active Signals</div>
+            </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('users')">👤 Users</button>
+            <button class="admin-tab" onclick="switchTab('signals')">📊 Signals</button>
+            <button class="admin-tab" onclick="switchTab('create')">➕ Create Signal</button>
+            <button class="admin-tab" onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+
+        <!-- ===== USERS TAB ===== -->
+        <div id="usersTab" class="admin-section active">
+            <h2>👤 User Management <span style="font-size: 14px; color: #666;">(ZAR Subscriptions)</span></h2>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="number" id="quickTotalUsers">0</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickActiveUsers">0</div>
+                    <div class="label">Active</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickInactiveUsers">0</div>
+                    <div class="label">Inactive</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickMonthlyUsers">0</div>
+                    <div class="label">Monthly Plan</div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Plan (ZAR)</th>
+                            <th>Status</th>
+                            <th>Expires</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <tr><td colspan="7" class="loading-spinner">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== SIGNALS TAB ===== -->
+        <div id="signalsTab" class="admin-section">
+            <h2>📊 Signal Management <span style="font-size: 14px; color: #666;">(ZAR & Major Pairs)</span></h2>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="number" id="quickTotalSignals">0</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickActiveSignals">0</div>
+                    <div class="label">Active</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickClosedSignals">0</div>
+                    <div class="label">Closed</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="number" id="quickBuySignals">0</div>
+                    <div class="label">BUY</div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pair</th>
+                            <th>Action</th>
+                            <th>Entry</th>
+                            <th>TP</th>
+                            <th>SL</th>
+                            <th>Confidence</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signalsTable">
+                        <tr><td colspan="8" class="loading-spinner">Loading signals...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== CREATE SIGNAL TAB ===== -->
+        <div id="createTab" class="admin-section">
+            <h2>➕ Create New Signal <span style="font-size: 14px; color: #666;">(ZAR Pairs Available)</span></h2>
+            <div class="create-form">
+                <h3>📝 Signal Details</h3>
+                <form id="createSignalForm" onsubmit="createSignal(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Currency Pair</label>
+                            <select id="signalPair" required>
+                                <option value="">Select Pair</option>
+                                <!-- Major Pairs -->
+                                <option value="EUR/USD">EUR/USD</option>
+                                <option value="GBP/USD">GBP/USD</option>
+                                <option value="USD/JPY">USD/JPY</option>
+                                <option value="AUD/USD">AUD/USD</option>
+                                <option value="USD/CAD">USD/CAD</option>
+                                <option value="USD/CHF">USD/CHF</option>
+                                <option value="NZD/USD">NZD/USD</option>
+                                <!-- 🇿🇦 ZAR Pairs -->
+                                <option value="USD/ZAR">🇿🇦 USD/ZAR</option>
+                                <option value="EUR/ZAR">🇿🇦 EUR/ZAR</option>
+                                <option value="GBP/ZAR">🇿🇦 GBP/ZAR</option>
+                                <option value="AUD/ZAR">🇿🇦 AUD/ZAR</option>
+                                <!-- Cross Pairs -->
+                                <option value="GBP/AUD">GBP/AUD</option>
+                                <option value="EUR/GBP">EUR/GBP</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Action</label>
+                            <select id="signalAction" required>
+                                <option value="">Select Action</option>
+                                <option value="BUY">BUY</option>
+                                <option value="SELL">SELL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Entry Price</label>
+                            <input type="number" id="signalEntry" placeholder="e.g., 1.0892" step="0.0001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Take Profit (TP)</label>
+                            <input type="number" id="signalTP" placeholder="e.g., 1.0950" step="0.0001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stop Loss (SL)</label>
+                            <input type="number" id="signalSL" placeholder="e.g., 1.0840" step="0.0001" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Confidence</label>
+                            <select id="signalConfidence">
+                                <option value="HIGH">HIGH</option>
+                                <option value="MEDIUM" selected>MEDIUM</option>
+                                <option value="LOW">LOW</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Analysis (optional)</label>
+                            <input type="text" id="signalAnalysis" placeholder="Brief analysis of the signal">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-form">📤 Create Signal & Notify VIP Members</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== SETTINGS TAB ===== -->
+        <div id="settingsTab" class="admin-section">
+            <h2>⚙️ Admin Settings</h2>
+            <div class="create-form">
+                <h3>🇿🇦 South African Settings</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Currency</label>
+                        <input type="text" value="ZAR - South African Rand" disabled style="opacity: 0.7;">
+                    </div>
+                    <div class="form-group">
+                        <label>Time Zone</label>
+                        <input type="text" value="Africa/Johannesburg" disabled style="opacity: 0.7;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>FSCA Compliance</label>
+                        <input type="text" value="✅ Active" disabled style="color: #00c853;">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Gateway</label>
+                        <input type="text" value="PayFast SA" disabled style="opacity: 0.7;">
+                    </div>
+                </div>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                <h3>📊 System Stats</h3>
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="number" id="systemUsers">0</div>
+                        <div class="label">Total Users</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="number" id="systemSignals">0</div>
+                        <div class="label">Total Signals</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="number" id="systemRevenue">R0</div>
+                        <div class="label">Total Revenue (ZAR)</div>
+                    </div>
+                </div>
+                <button class="btn-delete" onclick="confirmClear()" style="padding: 12px 30px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 20px;">
+                    🗑️ Clear All Data (Admin Only)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HAMBURGER MENU SCRIPT ===== -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+            });
+        }
+
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        document.querySelectorAll('.nav-links a, .nav-links button').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+
+    <!-- ===== ADMIN SCRIPTS ===== -->
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        // Check if user is logged in
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+
+        // Load admin data
+        async function loadAdminData() {
+            try {
+                // Load users
+                const usersRes = await fetch(`${API_URL}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const usersData = await usersRes.json();
+
+                // Load signals
+                const signalsRes = await fetch(`${API_URL}/signals/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const signalsData = await signalsRes.json();
+
+                if (usersData.success) {
+                    updateUsersTable(usersData.users);
+                    updateStats(usersData.users, signalsData.signals || []);
+                }
+
+                if (signalsData.success) {
+                    updateSignalsTable(signalsData.signals);
+                }
+
+                // Update admin name
+                const userRes = await fetch(`${API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const userData = await userRes.json();
+                if (userData.success) {
+                    document.getElementById('adminName').textContent = `👤 ${userData.user.name}`;
+                }
+
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+                document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="error-msg">❌ Failed to load data</td></tr>';
+                document.getElementById('signalsTable').innerHTML = '<tr><td colspan="8" class="error-msg">❌ Failed to load data</td></tr>';
+            }
+        }
+
+        // Update users table
+        function updateUsersTable(users) {
+            const table = document.getElementById('usersTable');
+            table.innerHTML = '';
+
+            if (!users || users.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="icon">👤</div>
+                                <p>No users registered yet</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            users.forEach(user => {
+                const statusClass = user.subscriptionStatus === 'active' ? 'status-active' : 'status-inactive';
+                const statusText = user.subscriptionStatus.charAt(0).toUpperCase() + user.subscriptionStatus.slice(1);
+                const planDisplay = user.plan.charAt(0).toUpperCase() + user.plan.slice(1);
+                const expiryDate = user.subscriptionEnd ? new Date(user.subscriptionEnd).toLocaleDateString('en-ZA') : 'N/A';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td>${planDisplay}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                    <td>${expiryDate}</td>
+                    <td>
+                        <button class="btn-action ${user.subscriptionStatus === 'active' ? 'btn-deactivate' : 'btn-activate'}" 
+                                onclick="toggleUserStatus('${user._id}', '${user.subscriptionStatus}')">
+                            ${user.subscriptionStatus === 'active' ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+
+            // Update quick stats
+            const total = users.length;
+            const active = users.filter(u => u.subscriptionStatus === 'active').length;
+            const inactive = users.filter(u => u.subscriptionStatus === 'inactive').length;
+            const monthly = users.filter(u => u.plan === 'monthly').length;
+
+            document.getElementById('quickTotalUsers').textContent = total;
+            document.getElementById('quickActiveUsers').textContent = active;
+            document.getElementById('quickInactiveUsers').textContent = inactive;
+            document.getElementById('quickMonthlyUsers').textContent = monthly;
+        }
+
+        // Update signals table
+        function updateSignalsTable(signals) {
+            const table = document.getElementById('signalsTable');
+            table.innerHTML = '';
+
+            if (!signals || signals.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <div class="icon">📊</div>
+                                <p>No signals created yet</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            signals.forEach(signal => {
+                const actionClass = signal.action.toLowerCase();
+                const statusClass = signal.status === 'active' ? 'status-active' : 'status-inactive';
+                const isZAR = signal.pair.includes('ZAR');
+                const pairDisplay = isZAR ? `🇿🇦 ${signal.pair}` : signal.pair;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${pairDisplay}</td>
+                    <td style="color: ${signal.action === 'BUY' ? '#00c853' : '#ff1744'}; font-weight: 700;">
+                        ${signal.action}
+                    </td>
+                    <td>${signal.entry}</td>
+                    <td>${signal.takeProfit}</td>
+                    <td>${signal.stopLoss}</td>
+                    <td class="confidence-${signal.confidence.toLowerCase()}">${signal.confidence}</td>
+                    <td class="${statusClass}">${signal.status.charAt(0).toUpperCase() + signal.status.slice(1)}</td>
+                    <td>
+                        <button class="btn-action btn-delete" onclick="deleteSignal('${signal._id}')">🗑️ Delete</button>
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+
+            // Update quick stats
+            const total = signals.length;
+            const active = signals.filter(s => s.status === 'active').length;
+            const closed = signals.filter(s => s.status === 'closed').length;
+            const buy = signals.filter(s => s.action === 'BUY').length;
+
+            document.getElementById('quickTotalSignals').textContent = total;
+            document.getElementById('quickActiveSignals').textContent = active;
+            document.getElementById('quickClosedSignals').textContent = closed;
+            document.getElementById('quickBuySignals').textContent = buy;
+        }
+
+        // Update stats
+        function updateStats(users, signals) {
+            const totalUsers = users ? users.length : 0;
+            const activeUsers = users ? users.filter(u => u.subscriptionStatus === 'active').length : 0;
+            const totalSignals = signals ? signals.length : 0;
+            const activeSignals = signals ? signals.filter(s => s.status === 'active').length : 0;
+
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('totalSignals').textContent = totalSignals;
+            document.getElementById('activeSignals').textContent = activeSignals;
+
+            // System stats
+            document.getElementById('systemUsers').textContent = totalUsers;
+            document.getElementById('systemSignals').textContent = totalSignals;
+            // Revenue calculation (placeholder)
+            const revenue = totalUsers * 1850; // R1,850 per user
+            document.getElementById('systemRevenue').textContent = `R${revenue.toLocaleString()}`;
+        }
+
+        // Toggle user status
+        async function toggleUserStatus(userId, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            if (confirm(`Set user to ${newStatus}? This will affect their access.`)) {
+                try {
+                    const response = await fetch(`${API_URL}/admin/users/${userId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ subscriptionStatus: newStatus })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        loadAdminData();
+                        alert('✅ User status updated successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error updating user:', error);
+                    alert('❌ Failed to update user status');
+                }
+            }
+        }
+
+        // Delete signal
+        async function deleteSignal(signalId) {
+            if (confirm('Delete this signal? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(`${API_URL}/signals/${signalId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        loadAdminData();
+                        alert('✅ Signal deleted successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error deleting signal:', error);
+                    alert('❌ Failed to delete signal');
+                }
+            }
+        }
+
+        // Create signal
+        async function createSignal(event) {
+            event.preventDefault();
+
+            const pair = document.getElementById('signalPair').value;
+            const action = document.getElementById('signalAction').value;
+            const entry = parseFloat(document.getElementById('signalEntry').value);
+            const takeProfit = parseFloat(document.getElementById('signalTP').value);
+            const stopLoss = parseFloat(document.getElementById('signalSL').value);
+            const confidence = document.getElementById('signalConfidence').value;
+            const analysis = document.getElementById('signalAnalysis').value;
+
+            if (!pair || !action || !entry || !takeProfit || !stopLoss) {
+                alert('❌ Please fill in all required fields');
+                return;
+            }
+
+            const submitBtn = document.querySelector('.btn-submit-form');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Creating...';
+
+            try {
+                const response = await fetch(`${API_URL}/signals`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        pair,
+                        action,
+                        entry,
+                        takeProfit,
+                        stopLoss,
+                        confidence,
+                        analysis
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Signal created and notifications sent to all VIP members!');
+                    document.getElementById('createSignalForm').reset();
+                    loadAdminData();
+                    // Switch to signals tab
+                    switchTab('signals');
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error creating signal:', error);
+                alert('❌ Failed to create signal');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = '📤 Create Signal & Notify VIP Members';
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Highlight selected tab
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                if (tab.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1)) ||
+                    tab.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1))) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Find the tab that matches
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                const tabText = tab.textContent.toLowerCase();
+                if (tabText.includes(tabName.toLowerCase())) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        // Confirm clear data
+        function confirmClear() {
+            if (confirm('⚠️ WARNING: This will delete ALL data including users and signals. Are you sure?')) {
+                if (confirm('⚠️ FINAL WARNING: This action is permanent. Type "DELETE" to confirm.')) {
+                    alert('This feature is disabled for safety. Contact support.');
+                }
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAdminData();
+
+            // Auto-refresh every 60 seconds
+            setInterval(loadAdminData, 60000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Dashboard - ForexPro SA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== HAMBURGER MENU STYLES ===== */
+        .navbar {
+            background: #0a0a1a;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f0b90b;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .sa-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #DE3831 33%, #FFB612 33%, #FFB612 66%, #007A4D 66%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            margin: 4px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+        }
+
+        .nav-overlay.active {
+            display: block;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid #ff1744;
+            color: #ff1744;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .btn-logout:hover {
+            background: #ff1744;
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                background: #0d0d20;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: right 0.3s ease;
+                padding: 40px 20px;
+                border-left: 1px solid rgba(255,255,255,0.05);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 20px;
+                color: white;
+            }
+
+            .nav-links a:hover {
+                color: #f0b90b;
+            }
+
+            .btn-logout {
+                font-size: 18px;
+                padding: 12px 40px;
+            }
+        }
+
+        /* ===== DASHBOARD STYLES ===== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .vip-badge {
+            background: #f0b90b;
+            color: #0a0a1a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* ===== COLLAPSIBLE SECTIONS ===== */
+        .collapsible-section {
+            background: #1a1a2e;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+            user-select: none;
+        }
+
+        .collapsible-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .collapsible-header h2 {
+            margin: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .collapsible-header .toggle-icon {
+            font-size: 24px;
+            transition: transform 0.3s ease;
+            color: #888;
+        }
+
+        .collapsible-header .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-body {
+            padding: 0 20px 20px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible-body.hidden {
+            display: none;
+        }
+
+        .sa-flag-badge {
+            display: inline-block;
+            background: rgba(240, 185, 11, 0.15);
+            color: #f0b90b;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* ===== RATES GRID ===== */
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .rate-card {
+            background: #0a0a1a;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .rate-card:hover {
+            transform: translateY(-5px);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+        }
+
+        .rate-card .pair {
+            font-size: 16px;
+            font-weight: 700;
+            color: #888;
+        }
+
+        .rate-card .price {
+            font-size: 24px;
+            font-weight: 800;
+            color: #f0b90b;
+            margin: 10px 0;
+        }
+
+        .rate-card .change.positive {
+            color: #00c853;
+        }
+
+        .rate-card .change.negative {
+            color: #ff1744;
+        }
+
+        .rate-card .zar-label {
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* ===== SIGNALS GRID ===== */
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .signal-card {
+            background: #0a0a1a;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #f0b90b;
+            transition: transform 0.3s;
+        }
+
+        .signal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .signal-pair {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .signal-action {
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .signal-action.buy {
+            background: #00c853;
+            color: white;
+        }
+
+        .signal-action.sell {
+            background: #ff1744;
+            color: white;
+        }
+
+        .signal-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .signal-detail {
+            background: #1a1a2e;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .signal-detail label {
+            display: block;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .signal-detail value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .confidence-high {
+            color: #00c853;
+        }
+
+        .confidence-medium {
+            color: #f0b90b;
+        }
+
+        .confidence-low {
+            color: #ff1744;
+        }
+
+        /* ===== MEMBERSHIP CARD ===== */
+        .membership-card {
+            background: #1a1a2e;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(240, 185, 11, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .membership-card .label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .membership-card .value {
+            color: #f0b90b;
+            font-weight: 700;
+        }
+
+        .membership-card .status-active {
+            color: #00c853;
+            font-weight: 700;
+        }
+
+        .membership-card .status-inactive {
+            color: #ff1744;
+            font-weight: 700;
+        }
+
+        /* ===== LOADING & ERRORS ===== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error-msg {
+            color: #ff1744;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ===== RISK BANNER ===== */
+        .risk-banner {
+            background: #8B0000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .risk-banner .small-text {
+            font-size: 12px;
+            font-weight: 400;
+            display: block;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* ===== PAIR FILTER ===== */
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-container select {
+            padding: 8px 15px;
+            background: #0a0a1a;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .filter-container select:focus {
+            outline: none;
+            border-color: #f0b90b;
+        }
+
+        .pair-count {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .pair-count strong {
+            color: #f0b90b;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .collapsible-header h2 {
+                font-size: 16px;
+                flex-wrap: wrap;
+            }
+            
+            .rates-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+            }
+            
+            .signals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .membership-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 🇿🇦 FSCA COMPLIANT RISK BANNER -->
+    <div class="risk-banner">
+        ⚠️ <strong>FSCA WARNING:</strong> Forex trading carries substantial risk. 
+        The Financial Sector Conduct Authority (FSCA) warns that trading foreign exchange 
+        on margin carries a high level of risk and may not be suitable for all investors.
+        <span class="small-text">
+            ForexPro SA is not a licensed financial services provider. 
+            Past performance does not guarantee future results. 
+            Only trade with capital you can afford to lose completely.
+        </span>
+    </div>
+
+    <!-- NAVBAR WITH HAMBURGER -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Forex<span>Pro</span> <span class="sa-badge">🇿🇦 SA</span></a>
+            
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="vip.html">Join VIP</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><span class="vip-badge">⭐ VIP</span></li>
+                <li><button class="btn-logout" onclick="logout()">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div>
+                <h2 style="margin:0;">📊 My Dashboard</h2>
+                <span style="font-size: 12px; color: #666;">🇿🇦 South Africa</span>
+            </div>
+            <div class="user-info">
+                <span id="userName" style="color: #aaa;">Loading...</span>
+                <span id="userPlan" style="color: #888; font-size: 14px;"></span>
+                <span class="vip-badge">⭐ VIP</span>
+            </div>
+        </div>
+
+        <!-- Membership Status -->
+        <div class="membership-card">
+            <span class="label">📌 Membership:</span>
+            <span class="value" id="membershipStatus">Active</span>
+            <span class="label">| Plan:</span>
+            <span class="value" id="membershipPlan">Monthly</span>
+            <span class="label">| Expires:</span>
+            <span class="value" id="membershipExpiry">Loading...</span>
+        </div>
+
+        <!-- ===== COLLAPSIBLE: LIVE MARKETS ===== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('liveMarkets')">
+                <h2>
+                    📊 Live Forex Markets 
+                    <span class="sa-flag-badge">🇿🇦 ALL 74 PAIRS</span>
+                </h2>
+                <span class="toggle-icon" id="liveMarketsIcon">▼</span>
+            </div>
+            <div class="collapsible-body" id="liveMarketsBody">
+                <!-- TradingView Widget -->
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_forex"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                        new TradingView.MediumWidget({
+                            "container_id": "tradingview_forex",
+                            "symbols": [
+                                // MAJOR PAIRS
+                                ["EUR/USD", "FX:EURUSD|1m"],
+                                ["GBP/USD", "FX:GBPUSD|1m"],
+                                ["USD/JPY", "FX:USDJPY|1m"],
+                                ["AUD/USD", "FX:AUDUSD|1m"],
+                                ["USD/CAD", "FX:USDCAD|1m"],
+                                ["USD/CHF", "FX:USDCHF|1m"],
+                                ["NZD/USD", "FX:NZDUSD|1m"],
+                                // MINOR PAIRS
+                                ["EUR/GBP", "FX:EURGBP|1m"],
+                                ["EUR/JPY", "FX:EURJPY|1m"],
+                                ["EUR/CHF", "FX:EURCHF|1m"],
+                                ["GBP/JPY", "FX:GBPJPY|1m"],
+                                ["GBP/CHF", "FX:GBPCHF|1m"],
+                                ["GBP/AUD", "FX:GBPAUD|1m"],
+                                ["AUD/JPY", "FX:AUDJPY|1m"],
+                                ["AUD/CHF", "FX:AUDCHF|1m"],
+                                ["AUD/NZD", "FX:AUDNZD|1m"],
+                                ["CAD/JPY", "FX:CADJPY|1m"],
+                                ["CHF/JPY", "FX:CHFJPY|1m"],
+                                ["NZD/JPY", "FX:NZDJPY|1m"],
+                                ["NZD/CHF", "FX:NZDCHF|1m"],
+                                ["NZD/CAD", "FX:NZDCAD|1m"],
+                                // ZAR PAIRS
+                                ["🇿🇦 USD/ZAR", "FX:USDZAR|1m"],
+                                ["🇿🇦 EUR/ZAR", "FX:EURZAR|1m"],
+                                ["🇿🇦 GBP/ZAR", "FX:GBPZAR|1m"],
+                                ["🇿🇦 AUD/ZAR", "FX:AUDZAR|1m"],
+                                ["🇿🇦 NZD/ZAR", "FX:NZDZAR|1m"],
+                                ["🇿🇦 JPY/ZAR", "FX:JPYZAR|1m"],
+                                ["🇿🇦 CHF/ZAR", "FX:CHFZAR|1m"],
+                                ["🇿🇦 CAD/ZAR", "FX:CADZAR|1m"],
+                                // EXOTIC PAIRS
+                                ["EUR/SEK", "FX:EURSEK|1m"],
+                                ["EUR/NOK", "FX:EURNOK|1m"],
+                                ["EUR/DKK", "FX:EURDKK|1m"],
+                                ["GBP/SEK", "FX:GBPSEK|1m"],
+                                ["GBP/NOK", "FX:GBPNOK|1m"],
+                                ["USD/SEK", "FX:USDSEK|1m"],
+                                ["USD/NOK", "FX:USDNOK|1m"],
+                                ["USD/DKK", "FX:USDDKK|1m"],
+                                ["USD/TRY", "FX:USDTRY|1m"],
+                                ["USD/SGD", "FX:USDSGD|1m"],
+                                ["USD/HKD", "FX:USDHKD|1m"],
+                                ["USD/MXN", "FX:USDMXN|1m"],
+                                ["USD/PLN", "FX:USDPLN|1m"],
+                                ["USD/CZK", "FX:USDCZK|1m"],
+                                ["USD/HUF", "FX:USDHUF|1m"],
+                                ["USD/ILS", "FX:USDILS|1m"],
+                                ["USD/KRW", "FX:USDKRW|1m"],
+                                ["USD/TWD", "FX:USDTWD|1m"],
+                                ["USD/THB", "FX:USDTHB|1m"],
+                                ["USD/CNY", "FX:USDCNY|1m"],
+                                ["USD/INR", "FX:USDINR|1m"],
+                                ["USD/BRL", "FX:USDBRL|1m"],
+                                ["USD/RUB", "FX:USDRUB|1m"],
+                                // GOLD & COMMODITIES
+                                ["XAU/USD", "FX:XAUUSD|1m"],
+                                ["XAG/USD", "FX:XAGUSD|1m"],
+                                ["🇿🇦 XAU/ZAR", "FX:XAUZAR|1m"],
+                                ["🇿🇦 XAG/ZAR", "FX:XAGZAR|1m"],
+                                // CRYPTO
+                                ["BTC/USD", "CRYPTO:BTCUSD|1m"],
+                                ["ETH/USD", "CRYPTO:ETHUSD|1m"],
+                                ["🇿🇦 BTC/ZAR", "CRYPTO:BTCZAR|1m"],
+                                ["🇿🇦 ETH/ZAR", "CRYPTO:ETHZAR|1m"]
+                            ],
+                            "greyText": "Live Forex Rates - All 74 Pairs",
+                            "gridLineColor": "#1a1a2e",
+                            "fontColor": "#ffffff",
+                            "underLineColor": "#f0b90b",
+                            "trendLineColor": "#f0b90b",
+                            "width": "100%",
+                            "height": "500px"
+                        });
+                    </script>
+                </div>
+                
+                <!-- Pair Count Display -->
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 15px; padding: 15px; background: #0a0a1a; border-radius: 10px;">
+                    <span style="color: #888; font-size: 13px;">🇿🇦 <strong>ZAR Pairs:</strong> 22</span>
+                    <span style="color: #888; font-size: 13px;">📈 <strong>Major:</strong> 7</span>
+                    <span style="color: #888; font-size: 13px;">🔄 <strong>Minor:</strong> 14</span>
+                    <span style="color: #888; font-size: 13px;">🌍 <strong>Exotic:</strong> 23</span>
+                    <span style="color: #888; font-size: 13px;">🥇 <strong>Gold:</strong> 4</span>
+                    <span style="color: #888; font-size: 13px;">💰 <strong>Crypto:</strong> 4</span>
+                    <span style="color: #f0b90b; font-size: 13px; font-weight: 700;">📊 <strong>TOTAL: 74 PAIRS</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== COLLAPSIBLE: VIP MARKET ANALYSIS ===== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('vipAnalysis')">
+                <h2>
+                    📈 VIP Market Analysis 
+                    <span class="sa-flag-badge">🇿🇦 ZAR & Major Pairs</span>
+                </h2>
+                <span class="toggle-icon" id="vipAnalysisIcon">▼</span>
+            </div>
+            <div class="collapsible-body" id="vipAnalysisBody">
+                <!-- Filter -->
+                <div class="filter-container">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <span style="color: #888; font-size: 14px;">Filter:</span>
+                        <select id="pairFilter" onchange="filterPairs()">
+                            <option value="all">All Pairs</option>
+                            <option value="major">Major Pairs</option>
+                            <option value="minor">Minor Pairs</option>
+                            <option value="exotic">Exotic Pairs</option>
+                            <option value="zar">🇿🇦 ZAR Pairs</option>
+                            <option value="gold">Gold & Commodities</option>
+                            <option value="crypto">Crypto</option>
+                        </select>
+                    </div>
+                    <span class="pair-count">Showing: <strong id="pairCount">0</strong> pairs</span>
+                </div>
+                
+                <div id="ratesContainer" class="rates-grid">
+                    <div class="loading">Loading market data...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== COLLAPSIBLE: VIP SIGNALS ===== -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection('vipSignals')">
+                <h2>📈 VIP Signals <span class="sa-flag-badge">Active Signals</span></h2>
+                <span class="toggle-icon" id="vipSignalsIcon">▼</span>
+            </div>
+            <div class="collapsible-body" id="vipSignalsBody">
+                <div id="signalsContainer" class="signals-grid">
+                    <div class="loading">Loading signals...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== HAMBURGER MENU SCRIPT ===== -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+            });
+        }
+
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+
+        document.querySelectorAll('.nav-links a, .nav-links button').forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // ===== TOGGLE SECTIONS =====
+        function toggleSection(sectionId) {
+            const body = document.getElementById(sectionId + 'Body');
+            const icon = document.getElementById(sectionId + 'Icon');
+            
+            if (body.classList.contains('hidden')) {
+                body.classList.remove('hidden');
+                icon.classList.remove('collapsed');
+                icon.textContent = '▼';
+            } else {
+                body.classList.add('hidden');
+                icon.classList.add('collapsed');
+                icon.textContent = '▶';
+            }
+        }
+    </script>
+
+    <!-- ===== DASHBOARD SCRIPTS ===== -->
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        }
+
+        // Load user data
+        async function loadUser() {
+            try {
+                const response = await fetch(`${API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Unauthorized');
+                }
+
+                const data = await response.json();
+                document.getElementById('userName').textContent = data.user.name;
+                document.getElementById('userPlan').textContent = data.user.plan.charAt(0).toUpperCase() + data.user.plan.slice(1);
+                document.getElementById('membershipPlan').textContent = data.user.plan.charAt(0).toUpperCase() + data.user.plan.slice(1);
+                document.getElementById('membershipStatus').textContent = data.user.subscriptionStatus.charAt(0).toUpperCase() + data.user.subscriptionStatus.slice(1);
+                document.getElementById('membershipExpiry').textContent = new Date(data.user.subscriptionEnd).toLocaleDateString('en-ZA');
+            } catch (error) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ALL PAIRS for filtering
+        const ALL_PAIRS = {
+            'major': ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD'],
+            'minor': ['EUR/GBP', 'EUR/JPY', 'EUR/CHF', 'GBP/JPY', 'GBP/CHF', 'GBP/AUD', 'AUD/JPY', 'AUD/CHF', 'AUD/NZD', 'CAD/JPY', 'CHF/JPY', 'NZD/JPY', 'NZD/CHF', 'NZD/CAD'],
+            'exotic': ['EUR/SEK', 'EUR/NOK', 'EUR/DKK', 'GBP/SEK', 'GBP/NOK', 'USD/SEK', 'USD/NOK', 'USD/DKK', 'USD/TRY', 'USD/SGD', 'USD/HKD', 'USD/MXN', 'USD/PLN', 'USD/CZK', 'USD/HUF', 'USD/ILS', 'USD/KRW', 'USD/TWD', 'USD/THB', 'USD/CNY', 'USD/INR', 'USD/BRL', 'USD/RUB'],
+            'zar': ['USD/ZAR', 'EUR/ZAR', 'GBP/ZAR', 'AUD/ZAR', 'NZD/ZAR', 'JPY/ZAR', 'CHF/ZAR', 'CAD/ZAR', 'SEK/ZAR', 'NOK/ZAR', 'DKK/ZAR', 'CNY/ZAR', 'INR/ZAR', 'TRY/ZAR', 'PLN/ZAR', 'CZK/ZAR', 'HUF/ZAR', 'SGD/ZAR', 'HKD/ZAR', 'MXN/ZAR', 'BRL/ZAR', 'RUB/ZAR'],
+            'gold': ['XAU/USD', 'XAG/USD', 'XAU/ZAR', 'XAG/ZAR'],
+            'crypto': ['BTC/USD', 'ETH/USD', 'BTC/ZAR', 'ETH/ZAR']
+        };
+
+        // Load live rates with filtering
+        async function loadRates(filter = 'all') {
+            try {
+                const response = await fetch(`${API_URL}/signals/rates`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load rates');
+
+                const data = await response.json();
+                const container = document.getElementById('ratesContainer');
+                container.innerHTML = '';
+
+                let filteredPairs = Object.entries(data.rates);
+                let count = 0;
+
+                // Apply filter
+                if (filter !== 'all' && ALL_PAIRS[filter]) {
+                    filteredPairs = filteredPairs.filter(([pair]) => ALL_PAIRS[filter].includes(pair));
+                }
+
+                // Sort pairs: ZAR first, then alphabetically
+                filteredPairs.sort((a, b) => {
+                    const aIsZAR = a[0].includes('ZAR');
+                    const bIsZAR = b[0].includes('ZAR');
+                    if (aIsZAR && !bIsZAR) return -1;
+                    if (!aIsZAR && bIsZAR) return 1;
+                    return a[0].localeCompare(b[0]);
+                });
+
+                count = filteredPairs.length;
+                document.getElementById('pairCount').textContent = count;
+
+                if (count === 0) {
+                    container.innerHTML = '<div class="loading">No pairs match this filter</div>';
+                    return;
+                }
+
+                const zarPairs = ALL_PAIRS.zar;
+                
+                for (const [pair, info] of filteredPairs) {
+                    const isPositive = info.change.startsWith('+');
+                    const isZAR = zarPairs.includes(pair);
+                    const card = document.createElement('div');
+                    card.className = 'rate-card';
+                    card.innerHTML = `
+                        <div class="pair">${pair} ${isZAR ? '🇿🇦' : ''}</div>
+                        <div class="price">${info.price}</div>
+                        <div class="change ${isPositive ? 'positive' : 'negative'}">${info.change}</div>
+                        ${isZAR ? '<span class="zar-label">South African Rand</span>' : ''}
+                    `;
+                    container.appendChild(card);
+                }
+            } catch (error) {
+                document.getElementById('ratesContainer').innerHTML = '<div class="error-msg">❌ Failed to load rates</div>';
+            }
+        }
+
+        // Filter pairs
+        function filterPairs() {
+            const filter = document.getElementById('pairFilter').value;
+            loadRates(filter);
+        }
+
+        // Load signals
+        async function loadSignals() {
+            try {
+                const response = await fetch(`${API_URL}/signals`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load signals');
+
+                const data = await response.json();
+                const container = document.getElementById('signalsContainer');
+                container.innerHTML = '';
+
+                if (data.signals.length === 0) {
+                    container.innerHTML = '<div class="loading">No active signals at the moment. Check back soon!</div>';
+                    return;
+                }
+
+                data.signals.forEach(signal => {
+                    const card = document.createElement('div');
+                    card.className = 'signal-card';
+                    const actionClass = signal.action.toLowerCase();
+                    const confidenceClass = `confidence-${signal.confidence.toLowerCase()}`;
+                    const isZAR = signal.pair.includes('ZAR');
+                    
+                    card.innerHTML = `
+                        <div class="signal-header">
+                            <span class="signal-pair">${signal.pair} ${isZAR ? '🇿🇦' : ''}</span>
+                            <span class="signal-action ${actionClass}">${signal.action}</span>
+                        </div>
+                        <div class="signal-details">
+                            <div class="signal-detail">
+                                <label>Entry</label>
+                                <value>${signal.entry}</value>
+                            </div>
+                            <div class="signal-detail">
+                                <label>TP</label>
+                                <value>${signal.takeProfit}</value>
+                            </div>
+                            <div class="signal-detail">
+                                <label>SL</label>
+                                <value>${signal.stopLoss}</value>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <span class="${confidenceClass}">${signal.confidence} Confidence</span>
+                            ${signal.analysis ? `<div style="color: #888; font-size: 12px; margin-top: 5px;">📝 ${signal.analysis}</div>` : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                document.getElementById('signalsContainer').innerHTML = '<div class="error-msg">❌ Failed to load signals</div>';
+            }
+        }
+
+        // Load everything
+        loadUser();
+        loadRates('all');
+        loadSignals();
+
+        // Refresh rates and signals every 30 seconds
+        setInterval(() => {
+            const currentFilter = document.getElementById('pairFilter').value;
+            loadRates(currentFilter);
+            loadSignals();
+        }, 30000);
+    </script>
+</body>
+</html>
