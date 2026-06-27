@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose'); // ✅ Added this - was missing!
+const mongoose = require('mongoose');
 const connectDB = require('./config/database');
 
 // Load environment variables
@@ -19,7 +19,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// ===== ROUTES =====
+// ✅ CORRECT: Register routes with proper paths
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/signals', require('./routes/signals'));
 app.use('/api/admin', require('./routes/admin'));
@@ -39,7 +40,7 @@ app.get('/test-db', async (req, res) => {
     try {
         const db = mongoose.connection;
         
-        if (db.readyState === 1) { // 1 = connected
+        if (db.readyState === 1) {
             const collections = await mongoose.connection.db.listCollections().toArray();
             res.json({
                 success: true,
