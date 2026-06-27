@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // ===== ROUTES =====
-// ✅ CORRECT: Register routes with proper paths
+// ✅ FIXED: Clean route registration
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/signals', require('./routes/signals'));
 app.use('/api/admin', require('./routes/admin'));
